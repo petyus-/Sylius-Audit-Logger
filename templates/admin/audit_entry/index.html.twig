@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Audit logs</title>
+    <style>
+        body { font-family: system-ui, sans-serif; margin: 2rem; color: #1a1a2e; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #d5d5dc; padding: .5rem .75rem; text-align: left; }
+        th { background: #f0f0f5; }
+        form { margin-bottom: 1.5rem; display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap; }
+        label { display: block; font-weight: 600; font-size: .85rem; margin-bottom: .25rem; }
+        input { padding: .35rem .5rem; border: 1px solid #d5d5dc; border-radius: 4px; }
+        button { padding: .4rem 1rem; background: #1abb9c; color: #fff; border: 0; border-radius: 4px; cursor: pointer; }
+        a { color: #1abb9c; }
+        .empty { color: #888; text-align: center; }
+    </style>
+</head>
+<body>
+    <h1>Audit logs</h1>
+
+    {% if grid.definition.enabledFilters is not empty %}
+        <form method="get" action="{{ path('petyus_audit_logger_admin_audit_entry_index') }}" novalidate>
+            {% for filter in grid.definition.enabledFilters %}
+                <div>
+                    <label>{{ filter.label }}</label>
+                    {{ sylius_grid_render_filter(grid, filter) }}
+                </div>
+            {% endfor %}
+            <div>
+                <button type="submit">Filter</button>
+                <a href="{{ path('petyus_audit_logger_admin_audit_entry_index') }}">Reset</a>
+            </div>
+        </form>
+    {% endif %}
+
+    <table>
+        <thead>
+        <tr>
+            {% for field in grid.definition.fields %}
+                <th>{{ field.label }}</th>
+            {% endfor %}
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for row in grid.data %}
+            <tr>
+                {% for field in grid.definition.fields %}
+                    <td>{{ sylius_grid_render_field(grid, field, row) }}</td>
+                {% endfor %}
+                <td><a href="{{ path('petyus_audit_logger_admin_audit_entry_show', {id: row.id}) }}">Details</a></td>
+            </tr>
+        {% else %}
+            <tr><td class="empty" colspan="{{ grid.definition.fields|length + 1 }}">No audit entries found.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {% if grid.data.nbResults is defined %}
+        <p>{{ grid.data.nbResults }} audit entries</p>
+    {% endif %}
+</body>
+</html>

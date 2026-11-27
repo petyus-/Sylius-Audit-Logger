@@ -1,0 +1,42 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    Petyus\SyliusAuditLogger\AuditEntryFactory: ~
+
+    Petyus\SyliusAuditLogger\AuditEntryFactoryInterface:
+        alias: Petyus\SyliusAuditLogger\AuditEntryFactory
+        public: true
+
+    Petyus\SyliusAuditLogger\Controller\AuditEntryPageController: ~
+
+    Petyus\SyliusAuditLogger\Menu\AuditEntryMenuProvider:
+        tags:
+            - { name: sylius_admin.main_menu_provider, priority: -650 }
+
+    Petyus\SyliusAuditLogger\Doctrine\AuditEntryRepository: ~
+
+    Petyus\SyliusAuditLogger\Doctrine\DoctrineAuditDriver: ~
+
+    Petyus\SyliusAuditLogger\File\FileAuditDriver:
+        arguments:
+            $path: '%petyus_audit_logger.file.path%'
+
+    Petyus\SyliusAuditLogger\Command\AuditEntryPurgeCommand:
+        arguments:
+            $retentionDays: '%petyus_audit_logger.retention_days%'
+
+    Petyus\SyliusAuditLogger\AuditEntryRepositoryInterface:
+        alias: Petyus\SyliusAuditLogger\Doctrine\AuditEntryRepository
+        public: true
+
+    Petyus\SyliusAuditLogger\Resolver\ActorResolver:
+        public: true
+
+    Petyus\SyliusAuditLogger\EventSubscriber\AuditSubscriber:
+        arguments:
+            $resources: '%petyus_audit_logger.resources%'
+        tags:
+            - { name: doctrine.event_listener, event: onFlush }
+

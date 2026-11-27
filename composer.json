@@ -1,0 +1,32 @@
+{
+    "name": "petyus/sylius-audit-logger",
+    "description": "Sylius 2 plugin that records who changed which resource, when, with full changesets - Doctrine or JSONL file storage, admin grid and retention purging.",
+    "type": "sylius-plugin",
+    "license": "MIT",
+    "keywords": ["audit", "log", "security", "gdpr", "sylius", "symfony"],
+    "version": "0.1.0",
+    "authors": [
+        {
+            "name": "Petyus",
+            "homepage": "https://github.com/petyus"
+        }
+    ],
+    "require": {
+        "php": ">=8.2",
+        "sylius/sylius": "^2.0"
+    },
+    "suggest": {
+        "doctrine/orm": "For the default doctrine storage driver",
+        "ext-json": "For the file storage driver (JSONL output)"
+    },
+    "autoload": {
+        "psr-4": {
+            "Petyus\\SyliusAuditLogger\\": "src/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

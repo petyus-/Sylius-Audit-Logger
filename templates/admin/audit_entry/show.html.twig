@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Audit log entry #{{ entry.id }}</title>
+    <style>
+        body { font-family: system-ui, sans-serif; margin: 2rem; color: #1a1a2e; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #d5d5dc; padding: .5rem .75rem; text-align: left; }
+        th { background: #f0f0f5; }
+        code { background: #f6f6fa; padding: .1rem .3rem; border-radius: 3px; }
+        dt { font-weight: 600; }
+        a { color: #1abb9c; }
+    </style>
+</head>
+<body>
+    <h1>Audit log entry #{{ entry.id }}</h1>
+    <p><a href="{{ path('petyus_audit_logger_admin_audit_entry_index') }}">&larr; Back to audit logs</a></p>
+
+    <dl>
+        <dt>Admin user</dt><dd>{{ entry.adminUserEmail ?? '—' }}</dd>
+        <dt>Action</dt><dd>{{ entry.action }}</dd>
+        <dt>Resource</dt><dd>{{ entry.resourceClass }}#{{ entry.resourceId }}</dd>
+        <dt>IP address</dt><dd>{{ entry.ip ?? '—' }}</dd>
+        <dt>Created at</dt><dd>{{ entry.createdAt|date('Y-m-d H:i:s') }}</dd>
+    </dl>
+
+    <h2>Changeset</h2>
+    {% if entry.changeset is empty %}
+        <p>No changes recorded.</p>
+    {% else %}
+        <table>
+            <thead>
+            <tr><th>Field</th><th>Old value</th><th>New value</th></tr>
+            </thead>
+            <tbody>
+            {% for field, change in entry.changeset %}
+                <tr>
+                    <td><strong>{{ field }}</strong></td>
+                    <td><code>{{ change[0] is null ? 'null' : change[0] }}</code></td>
+                    <td><code>{{ change[1] is null ? 'null' : change[1] }}</code></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+</body>
+</html>

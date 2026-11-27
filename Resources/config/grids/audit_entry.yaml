@@ -1,0 +1,55 @@
+sylius_grid:
+    grids:
+        petyus_audit_logger_admin_audit_entry:
+            driver:
+                name: doctrine/orm
+                options:
+                    class: Petyus\SyliusAuditLogger\Entity\AuditEntry
+            sorting:
+                createdAt: desc
+            fields:
+                createdAt:
+                    type: datetime
+                    label: Created at
+                    path: createdAt
+                    sortable: createdAt
+                adminUserEmail:
+                    type: string
+                    label: Admin user
+                    path: adminUserEmail
+                    sortable: adminUserEmail
+                action:
+                    type: string
+                    label: Action
+                    path: action
+                    sortable: action
+                resourceClass:
+                    type: string
+                    label: Resource class
+                    path: resourceClass
+                    sortable: resourceClass
+                resourceId:
+                    type: string
+                    label: Resource id
+                    path: resourceId
+            filters:
+                adminUserEmail:
+                    type: string
+                    label: Admin user
+                    options:
+                        fields: [adminUserEmail]
+                action:
+                    type: string
+                    label: Action
+                    options:
+                        fields: [action]
+                resourceClass:
+                    type: string
+                    label: Resource class
+                    options:
+                        fields: [resourceClass]
+                createdAt:
+                    type: date
+                    label: Created at
+                    options:
+                        field: createdAt

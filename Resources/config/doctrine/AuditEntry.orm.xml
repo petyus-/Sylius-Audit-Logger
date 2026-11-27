@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                                      https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="Petyus\SyliusAuditLogger\Entity\AuditEntry" table="petyus_audit_entry">
+        <id name="id" type="integer" column="id">
+            <generator strategy="AUTO"/>
+        </id>
+        <field name="adminUserEmail" column="admin_user_email" type="string" length="255" nullable="true"/>
+        <field name="action" column="action" type="string" length="64"/>
+        <field name="resourceClass" column="resource_class" type="string" length="255"/>
+        <field name="resourceId" column="resource_id" type="string" length="255"/>
+        <field name="changeset" column="changeset" type="json"/>
+        <field name="ip" column="ip" type="string" length="45" nullable="true"/>
+        <field name="createdAt" column="created_at" type="datetime_immutable"/>
+    </entity>
+</doctrine-mapping>
