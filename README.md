@@ -190,6 +190,40 @@ services:
 The `driver` config key becomes irrelevant; your alias wins as long as it is registered after the
 plugin's own alias (or you redefine it in `config/services.yaml`, which loads later).
 
+## Extension points (used by Pro)
+
+Two stable hooks let you extend the plugin without patching its internals.
+
+**1. `DriverInterface`** — swap the storage backend (Doctrine, JSONL, or your own Elasticsearch/S3
+driver). See [Writing a custom driver](#writing-a-custom-driver).
+
+**2. `AuditEntryRecordedEvent`** — dispatched after every recorded entry:
+
+```php
+use Petyus\SyliusAuditLogger\Event\AuditEntryRecordedEvent;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
+
+#[AsEventListener]
+final class SlackAlertListener
+{
+    public function __construct(private readonly \Psr\Log\LoggerInterface $logger) {}
+
+    public function __invoke(AuditEntryRecordedEvent $event): void
+    {
+        if ('update' === $event->entry->getAction()) {
+            $this->logger->warning('Admin changed a resource', [
+                'actor' => $event->entry->getAdminUserEmail(),
+                'resource' => $event->entry->getResourceClass(),
+            ]);
+        }
+    }
+}
+```
+
+Pro features (tamper-evident hashing, SIEM/S3/Webhook export, auditor PDF/CSV reports,
+alerting on sensitive actions, per-resource retention policies) are built on top of these two
+hooks, so they never require core changes.
+
 ## GDPR and personal data
 
 Audit logs inherently contain **personal data**: the admin user's email address and the client IP

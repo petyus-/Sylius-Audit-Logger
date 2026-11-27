@@ -9,7 +9,9 @@ use Doctrine\ORM\UnitOfWork;
 use Petyus\SyliusAuditLogger\AuditEntryFactoryInterface;
 use Petyus\SyliusAuditLogger\DriverInterface;
 use Petyus\SyliusAuditLogger\Resolver\ActorResolver;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Petyus\SyliusAuditLogger\Event\AuditEntryRecordedEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
@@ -32,6 +34,7 @@ final class AuditSubscriber implements EventSubscriberInterface
         private readonly DriverInterface $driver,
         /** @var list<class-string> */
         private readonly array $resources,
+        private readonly EventDispatcherInterface $eventDispatcher,
     ) {
     }
 
@@ -68,14 +71,16 @@ final class AuditSubscriber implements EventSubscriberInterface
                     continue;
                 }
 
-                $this->driver->record($this->entryFactory->createTyped(
+                $entry = $this->entryFactory->createTyped(
                     $actorEmail,
                     $pending['action'],
                     $pending['entity']::class,
                     $resourceId,
                     $pending['changeset'],
                     $ip,
-                ));
+                );
+                $this->driver->record($entry);
+                $this->eventDispatcher->dispatch(new AuditEntryRecordedEvent($entry));
             }
         } finally {
             $this->pending = [];
